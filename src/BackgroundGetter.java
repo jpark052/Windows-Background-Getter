@@ -1,72 +1,53 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-
 
 public class BackgroundGetter {
 
     public static File[] files;
-    public static File[] suitFiles;
     public static int currentFileNum;
-    public static int suit;
+    public static int newImagesNum = 0;
 
     public static void main(String[] args) throws IOException {
 
-        new File("C:\\Users\\jaepa\\Desktop\\Background_Images").mkdirs(); // creating a folder to store images
-
-       // fetchFiles();
-       // copyFiles();
+        // create a directory in the Desktop if it does not exist
+        new File("C:\\Users\\jaepa\\Desktop\\Background_Images").mkdirs();
         getNumber();
-
+        fetchFiles();
     }
 
-    public static void getNumber(){
+    // get the number of the images that are already in the folder
+    public static void getNumber() {
 
         File[] files = new File("C:\\Users\\jaepa\\Desktop\\Background_Images").listFiles();
         currentFileNum = files.length + 1;
-        //System.out.println(currentFileNum);
-
     }
 
-    public static void createFile(){
-        try {
-            File myObj = new File("C:\\Users\\jaepa\\Desktop\\Background_Images\\testA.txt");
-            if (myObj.createNewFile()) {
-                System.out.println("File created: " + myObj.getName());
-            } else {
-                System.out.println("File already exists.");
-            }
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-    }
-
+    // fetch the list raw image files from where they are stored in the system, and call copyFiles() method on the files
+    // that are bigger than 340kb (lower bound of the image file)
     public static void fetchFiles() throws NullPointerException, IOException {
-        files = new File("C:\\Users\\jaepa\\AppData\\Local\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets").listFiles();
 
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isFile()) {
-                    if (files[i].length() >= 340000) {
-                        copyFiles(files[i]);
-                        //System.out.println(files[i].length());
+        // location of raw image files stored
+        files = new File("C:\\Users\\jaepa\\AppData\\Local\\Packages\\" +
+                "Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets").listFiles();
 
-                    }
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                if (files[i].length() >= 340000) {
+                    copyFiles(files[i]);
+                    currentFileNum++;
+                    newImagesNum++;
                 }
+            }
         }
-
+        System.out.println(newImagesNum + " images has been created");
     }
 
+    // copy the file, convert it into jpeg, and store in the directory in the Destop
     public static void copyFiles(File file) throws IOException {
-//        Path origin = Paths.get("C:\\Users\\jaepa\\Desktop\\folderA");
-//        Path des = Paths.get("C:\\Users\\jaepa\\Desktop\\FolderB");
 
         File source = new File(file.getCanonicalPath());
-        File dest = new File("C:\\Users\\jaepa\\Desktop\\FolderB\\" + currentFileNum + ".jpg");
+        File dest = new File("C:\\Users\\jaepa\\Desktop\\Background_Images\\" + currentFileNum + ".jpg");
         Files.copy(source.toPath(), dest.toPath());
     }
-    }
+}
