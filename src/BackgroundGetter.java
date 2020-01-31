@@ -33,7 +33,7 @@ public class BackgroundGetter {
 
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile()) {
-                if (files[i].length() >= 340000) {
+                if (files[i].length() >= 300000) {
                     copyFiles(files[i]);
                     currentFileNum++;
                     newImagesNum++;
